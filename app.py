@@ -28,9 +28,18 @@ from flask_limiter.util import get_remote_address
 
 MODEL = "claude-haiku-4-5"
 
-# Only this origin may call the endpoint from a browser - without this, any
-# site could embed a fetch() to this API and spend your Claude usage.
-ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "https://liamk02.github.io")
+# Only these origins may call the endpoint from a browser - without this, any
+# site could embed a fetch() to this API and spend your Claude usage. Comma-
+# separated so both the custom domain and its GitHub Pages fallback can be
+# allowed at once (e.g. during a DNS cutover).
+ALLOWED_ORIGINS = {
+    origin.strip()
+    for origin in os.environ.get(
+        "ALLOWED_ORIGIN",
+        "https://kvarzellconsulting.com,https://www.kvarzellconsulting.com,https://liamk02.github.io",
+    ).split(",")
+    if origin.strip()
+}
 
 MAX_MESSAGE_CHARS = 3000
 MAX_NAME_CHARS = 200
@@ -77,7 +86,7 @@ limiter = Limiter(get_remote_address, app=app, default_limits=[])
 @app.after_request
 def add_cors_headers(response):
     origin = request.headers.get("Origin")
-    if origin == ALLOWED_ORIGIN:
+    if origin in ALLOWED_ORIGINS:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type"

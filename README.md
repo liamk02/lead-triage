@@ -5,7 +5,7 @@ before it lands in an inbox - category (client lead / collaboration /
 networking / general / spam), urgency, and a one-line summary.
 
 Built to power the contact form on
-[my portfolio site](https://liamk02.github.io/silver-barnacle/): the form's
+[my portfolio site](https://kvarzellconsulting.com/): the form's
 JS calls this API right before submitting to Formspree, and includes the
 tags in the email. If this service is ever slow, down, or rate-limited, the
 form still submits normally - triage is a non-blocking enhancement layered
@@ -31,8 +31,8 @@ sentiment tagging - more often, in practice, than document search does.
 
 ## Guardrails (public endpoint)
 
-- **CORS-restricted** - only requests from `ALLOWED_ORIGIN` (the portfolio
-  site) are permitted from a browser
+- **CORS-restricted** - only requests from an origin in `ALLOWED_ORIGIN`
+  (comma-separated; the portfolio site's domain(s)) are permitted from a browser
 - **Rate limited** - 20 requests/hour per caller (`flask-limiter`)
 - **Input validated** - oversized messages rejected before reaching Claude
 - **Cheap model** - Haiku 4.5, chosen for classification specifically
