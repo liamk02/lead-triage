@@ -93,6 +93,14 @@ def add_cors_headers(response):
     return response
 
 
+@app.route("/api/health")
+def health():
+    # No Claude API call here - a liveness check should never cost money.
+    response = jsonify({"status": "ok", "service": "lead-triage"})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
 @app.route("/api/triage", methods=["POST", "OPTIONS"])
 @limiter.limit("20 per hour")
 def triage():
