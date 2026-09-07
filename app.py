@@ -22,7 +22,7 @@ import re
 
 import anthropic
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -36,7 +36,8 @@ ALLOWED_ORIGINS = {
     origin.strip()
     for origin in os.environ.get(
         "ALLOWED_ORIGIN",
-        "https://kvarzellconsulting.com,https://www.kvarzellconsulting.com,https://liamk02.github.io",
+        "https://kvarzellconsulting.com,https://www.kvarzellconsulting.com,"
+        "https://liamk02.github.io,https://kvarzell-consult.higgsfield.app",
     ).split(",")
     if origin.strip()
 }
@@ -78,7 +79,10 @@ def extract_json(text: str) -> dict:
 
 
 load_dotenv()
-app = Flask(__name__)
+# static/ holds the demo front end (same skin as the main site). Serving it
+# from the root means the deployed service is both the API and a page you can
+# click into from kvarzell-consult, with no second host to keep alive.
+app = Flask(__name__, static_folder="static", static_url_path="")
 client = anthropic.Anthropic()
 limiter = Limiter(get_remote_address, app=app, default_limits=[])
 
@@ -91,6 +95,11 @@ def add_cors_headers(response):
         response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
+
+
+@app.route("/")
+def index():
+    return send_from_directory(app.static_folder, "index.html")
 
 
 @app.route("/api/health")
