@@ -37,7 +37,7 @@ ALLOWED_ORIGINS = {
     for origin in os.environ.get(
         "ALLOWED_ORIGIN",
         "https://kvarzellconsulting.com,https://www.kvarzellconsulting.com,"
-        "https://liamk02.github.io,https://kvarzell-consult.higgsfield.app",
+        "https://liamk02.github.io",
     ).split(",")
     if origin.strip()
 }
