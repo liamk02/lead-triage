@@ -73,6 +73,17 @@
   .dot { display: inline-block; width: 7px; height: 7px; border-radius: 999px; margin-right: 10px; vertical-align: middle; background: var(--muted); }
   .dot.medium { background: var(--accent); }
   .dot.high { background: var(--gold); box-shadow: 0 0 12px 2px rgba(242,217,168,0.5); }
+  /* Example messages. A classifier demo is only convincing if you can see it
+     tell different kinds of message apart, so the samples span the range. */
+  .examples { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .examples .label { display: block; margin-bottom: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    border: 1px solid var(--line-strong); background: transparent; color: var(--ink-soft);
+    font-family: var(--sans); font-size: 0.87rem; padding: 10px 14px; cursor: pointer;
+    transition: border-color 160ms cubic-bezier(0,0,0.2,1), color 160ms cubic-bezier(0,0,0.2,1);
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
   footer { padding: 32px 24px; text-align: center; }
   @media (max-width: 600px) { h1 { font-size: 2.1rem; } .out { grid-template-columns: 1fr; gap: 6px; } }
 </style>
@@ -108,6 +119,16 @@
       </div>
     </form>
 
+    <section class="examples" id="examples">
+      <p class="label">Or try one of these</p>
+      <div class="chips">
+        <button type="button" class="chip" data-sample="lead">A real client enquiry</button>
+        <button type="button" class="chip" data-sample="vague">A vague introduction</button>
+        <button type="button" class="chip" data-sample="collab">A partnership approach</button>
+        <button type="button" class="chip" data-sample="spam">Obvious spam</button>
+      </div>
+    </section>
+
     <div id="error" hidden></div>
     <div id="result" hidden>
       <div class="out"><span class="label">Category</span><span class="value" id="out-category"></span></div>
@@ -118,8 +139,11 @@
 
   <footer><span class="label">&copy; Kvarzell Consulting</span></footer>
 
+<script type="application/json" id="samples">{"lead": {"name": "Marcus Holm", "message": "Hi Liam, we run a wholesale bakery supplying about 40 cafes around Stockholm. Orders come in by email and WhatsApp and my sister types them into our spreadsheet every morning, which takes about two hours and we still get mix-ups. We have a big seasonal push starting in November and I do not think we can handle the volume the way we are working now. Is this something you could help with, and roughly what would it cost? Ideally we would want something running before the end of October."}, "vague": {"name": "Sofia", "message": "Hey, saw your site through a friend. Cool stuff. Might have something down the line, will keep you posted."}, "collab": {"name": "Daniel Ek", "message": "Hi, I build Shopify stores for Nordic brands and a few of my clients keep asking about automating their support inbox. Not something I do myself. Would you be open to a referral arrangement, or working together on a couple of these?"}, "spam": {"name": "Growth Team", "message": "Dear Sir/Madam, We are a leading SEO agency with 10+ years experience. We noticed your website is NOT ranking on page 1 of Google. We can guarantee first page results within 30 days. Reply now for a FREE audit. Limited slots available!!!"}}</script>
 <script>
   const form = document.getElementById("form");
+  const examples = document.getElementById("examples");
+  const SAMPLES = JSON.parse(document.getElementById("samples").textContent);
   const nameEl = document.getElementById("name");
   const messageEl = document.getElementById("message");
   const count = document.getElementById("count");
@@ -135,6 +159,16 @@
   };
 
   messageEl.addEventListener("input", () => { count.textContent = messageEl.value.length; });
+
+  examples.addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    const sample = SAMPLES[chip.dataset.sample];
+    nameEl.value = sample.name;
+    messageEl.value = sample.message;
+    count.textContent = sample.message.length;
+    form.requestSubmit();
+  });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
