@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lead Triage · Kvarzell Consulting</title>
+<title>Sortering av inkommande · Kvarzell Consulting</title>
 <link rel="icon" href="mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
@@ -42,9 +42,7 @@
 
   header { position: absolute; inset: 0 0 auto 0; height: 64px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-  .brand img { width: 24px; height: 24px; }
   .brand .label { color: var(--ink); }
-  .brand .label span { color: var(--muted); }
 
   main { flex: 1; width: 100%; max-width: 720px; margin: 0 auto; padding: 128px 24px 60px; }
   h1 { font-family: var(--serif); font-weight: 300; font-size: 2.6rem; line-height: 1.08; letter-spacing: -0.01em; margin-top: 16px; }
@@ -93,53 +91,52 @@
 
   <header>
     <a class="brand" href="https://kvarzellconsulting.com">
-      <img src="mark.png" alt="">
-      <span class="label">Kvarzell <span>Consulting</span></span>
+      <span class="label">Kvarzell Consulting</span>
     </a>
-    <a class="btn" href="https://kvarzellconsulting.com">&larr; Back to site</a>
+    <a class="btn" href="https://kvarzellconsulting.com">&larr; Tillbaka till sidan</a>
   </header>
 
   <main>
-    <p class="label">System &middot; Lead Triage</p>
-    <h1>Every message, sorted before it lands.</h1>
-    <p class="lede">Paste an inbound message the way it would arrive from a contact form. It comes back classified by category and urgency, with a one-line summary. The same service runs silently behind the Kvarzell contact form.</p>
+    <p class="label">System &middot; Sortering av inkommande</p>
+    <h1>Varje meddelande sorterat innan det landar.</h1>
+    <p class="lede">Klistra in ett meddelande så som det skulle komma in via ett kontaktformulär. Du får tillbaka vad det gäller, hur bråttom det är och en sammanfattning på en rad. Samma tjänst körs tyst bakom kontaktformuläret på kvarzellconsulting.com.</p>
 
     <form id="form">
       <div class="field">
-        <label class="label field-label" for="name">Name (optional)</label>
-        <input id="name" type="text" placeholder="Who sent it" autocomplete="off" maxlength="200">
+        <label class="label field-label" for="name">Namn (valfritt)</label>
+        <input id="name" type="text" placeholder="Vem skickade det" autocomplete="off" maxlength="200">
       </div>
       <div class="field">
-        <label class="label field-label" for="message">Message</label>
-        <textarea id="message" placeholder="Hi, we run a small logistics firm and spend hours a week re-keying orders from email into our system. Could you help us automate that? We need something before Q4." maxlength="3000"></textarea>
+        <label class="label field-label" for="message">Meddelande</label>
+        <textarea id="message" placeholder="Hej, vi driver ett mindre logistikföretag och lägger timmar varje vecka på att knappa in order från mejl i vårt system. Skulle ni kunna automatisera det? Vi behöver något före Q4." maxlength="3000"></textarea>
       </div>
       <div class="row">
         <span class="label"><span id="count">0</span> / 3000</span>
-        <button type="submit" id="submit" class="btn btn-solid">Triage</button>
+        <button type="submit" id="submit" class="btn btn-solid">Sortera</button>
       </div>
     </form>
 
     <section class="examples" id="examples">
-      <p class="label">Or try one of these</p>
+      <p class="label">Eller testa något av dessa</p>
       <div class="chips">
-        <button type="button" class="chip" data-sample="lead">A real client enquiry</button>
-        <button type="button" class="chip" data-sample="vague">A vague introduction</button>
-        <button type="button" class="chip" data-sample="collab">A partnership approach</button>
-        <button type="button" class="chip" data-sample="spam">Obvious spam</button>
+        <button type="button" class="chip" data-sample="lead">En riktig kundförfrågan</button>
+        <button type="button" class="chip" data-sample="vague">En vag presentation</button>
+        <button type="button" class="chip" data-sample="collab">Ett samarbetsförslag</button>
+        <button type="button" class="chip" data-sample="spam">Uppenbart skräp</button>
       </div>
     </section>
 
     <div id="error" hidden></div>
     <div id="result" hidden>
-      <div class="out"><span class="label">Category</span><span class="value" id="out-category"></span></div>
-      <div class="out"><span class="label">Urgency</span><span class="value" id="out-urgency"></span></div>
-      <div class="out"><span class="label">Summary</span><span class="value small" id="out-summary"></span></div>
+      <div class="out"><span class="label">Kategori</span><span class="value" id="out-category"></span></div>
+      <div class="out"><span class="label">Brådska</span><span class="value" id="out-urgency"></span></div>
+      <div class="out"><span class="label">Sammanfattning</span><span class="value small" id="out-summary"></span></div>
     </div>
   </main>
 
   <footer><span class="label">&copy; Kvarzell Consulting</span></footer>
 
-<script type="application/json" id="samples">{"lead": {"name": "Marcus Holm", "message": "Hi Liam, we run a wholesale bakery supplying about 40 cafes around Stockholm. Orders come in by email and WhatsApp and my sister types them into our spreadsheet every morning, which takes about two hours and we still get mix-ups. We have a big seasonal push starting in November and I do not think we can handle the volume the way we are working now. Is this something you could help with, and roughly what would it cost? Ideally we would want something running before the end of October."}, "vague": {"name": "Sofia", "message": "Hey, saw your site through a friend. Cool stuff. Might have something down the line, will keep you posted."}, "collab": {"name": "Daniel Ek", "message": "Hi, I build Shopify stores for Nordic brands and a few of my clients keep asking about automating their support inbox. Not something I do myself. Would you be open to a referral arrangement, or working together on a couple of these?"}, "spam": {"name": "Growth Team", "message": "Dear Sir/Madam, We are a leading SEO agency with 10+ years experience. We noticed your website is NOT ranking on page 1 of Google. We can guarantee first page results within 30 days. Reply now for a FREE audit. Limited slots available!!!"}}</script>
+<script type="application/json" id="samples">{"lead": {"name": "Marcus Holm", "message": "Hej Liam, vi driver ett bageri som levererar till ett fyrtiotal caféer runt Stockholm. Order kommer in via mejl och WhatsApp och min syster knappar in dem i vårt kalkylblad varje morgon, vilket tar ett par timmar och ändå blir det fel ibland. Vi har en stor säsong som drar igång i november och jag tror inte vi klarar volymen så som vi arbetar idag. Är det här något du skulle kunna hjälpa oss med, och vad skulle det ungefär kosta? Helst vill vi ha något på plats före oktober är slut."}, "vague": {"name": "Sofia", "message": "Hej, såg din sida via en kompis. Snyggt jobbat. Har kanske något på gång längre fram, återkommer."}, "collab": {"name": "Daniel Ek", "message": "Hej, jag bygger Shopify-butiker åt nordiska varumärken och flera av mina kunder frågar om att automatisera sin supportinkorg. Det är inget jag gör själv. Skulle du vara öppen för ett samarbete kring det, eller att jag skickar dem vidare till dig?"}, "spam": {"name": "Growth Team", "message": "Hej! Vi är en ledande SEO-byrå med över 10 års erfarenhet. Vi har noterat att er webbplats INTE rankar på sida 1 i Google. Vi kan GARANTERA förstasidesplacering inom 30 dagar. Svara nu för en GRATIS analys. Begränsat antal platser!!!"}}</script>
 <script>
   const form = document.getElementById("form");
   const examples = document.getElementById("examples");
@@ -155,8 +152,9 @@
   const outSummary = document.getElementById("out-summary");
 
   const CATEGORY_LABELS = {
-    client_lead: "Client lead", collaboration: "Collaboration", networking: "Networking", general: "General", spam: "Spam",
+    client_lead: "Kundförfrågan", collaboration: "Samarbete", networking: "Nätverkande", general: "Allmänt", spam: "Skräp",
   };
+  const URGENCY_LABELS = { low: "Låg", medium: "Medel", high: "Hög" };
 
   messageEl.addEventListener("input", () => { count.textContent = messageEl.value.length; });
 
@@ -176,12 +174,12 @@
     errorEl.hidden = true;
     resultEl.hidden = true;
     if (!message) {
-      errorEl.textContent = "Paste a message first.";
+      errorEl.textContent = "Klistra in ett meddelande först.";
       errorEl.hidden = false;
       return;
     }
     submitBtn.disabled = true;
-    submitBtn.textContent = "Reading";
+    submitBtn.textContent = "Läser";
     try {
       const res = await fetch("/api/triage", {
         method: "POST",
@@ -190,7 +188,7 @@
       });
       const data = await res.json();
       if (!res.ok) {
-        errorEl.textContent = data.error || "Something went wrong.";
+        errorEl.textContent = data.error || "Något gick fel.";
         errorEl.hidden = false;
         return;
       }
@@ -199,16 +197,16 @@
       const dot = document.createElement("span");
       dot.className = "dot " + data.urgency;
       outUrgency.appendChild(dot);
-      outUrgency.appendChild(document.createTextNode(data.urgency.charAt(0).toUpperCase() + data.urgency.slice(1)));
+      outUrgency.appendChild(document.createTextNode(URGENCY_LABELS[data.urgency] || data.urgency));
       outSummary.textContent = data.summary || "";
       resultEl.hidden = false;
       resultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (err) {
-      errorEl.textContent = "Could not reach the server. Check your connection and try again.";
+      errorEl.textContent = "Kunde inte nå servern. Kontrollera din anslutning och försök igen.";
       errorEl.hidden = false;
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Triage";
+      submitBtn.textContent = "Sortera";
     }
   });
 </script>

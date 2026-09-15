@@ -52,7 +52,7 @@ SYSTEM_PROMPT = f"""You triage inbound messages from a contact form on an AI
 consultant's portfolio site. Read the message and classify it.
 
 Respond with ONLY a JSON object, no other text, in exactly this shape:
-{{"category": "<one of {", ".join(CATEGORIES)}>", "urgency": "<one of {", ".join(URGENCIES)}>", "summary": "<one plain sentence, under 20 words, summarizing what they want>"}}
+{{"category": "<one of {", ".join(CATEGORIES)}>", "urgency": "<one of {", ".join(URGENCIES)}>", "summary": "<one plain sentence in SWEDISH, under 20 words, summarizing what they want>"}}
 
 Category meanings:
 - client_lead: someone describing a real business problem or asking about consulting/project work
@@ -62,7 +62,11 @@ Category meanings:
 - spam: unsolicited advertising, clearly automated, or irrelevant content
 
 Urgency reflects only what's stated or implied in the message itself - a
-stated deadline or "urgent" is high; a vague "someday" interest is low."""
+stated deadline or "urgent" is high; a vague "someday" interest is low.
+
+The summary MUST be written in Swedish, regardless of the language the
+message was written in. Category and urgency stay as the English keys
+listed above - the interface translates them for display."""
 
 
 def extract_json(text: str) -> dict:
@@ -121,11 +125,11 @@ def triage():
     message = (data.get("message") or "").strip()
 
     if not message:
-        return jsonify({"error": "Message is empty."}), 400
+        return jsonify({"error": "Meddelandet är tomt."}), 400
     if len(message) > MAX_MESSAGE_CHARS:
-        return jsonify({"error": f"Message too long (max {MAX_MESSAGE_CHARS} characters)."}), 400
+        return jsonify({"error": f"Meddelandet är för långt (max {MAX_MESSAGE_CHARS} tecken)."}), 400
     if len(name) > MAX_NAME_CHARS:
-        return jsonify({"error": "Name too long."}), 400
+        return jsonify({"error": "Namnet är för långt."}), 400
 
     user_content = f"Name: {name or '(not given)'}\nMessage:\n{message}"
 
@@ -143,13 +147,13 @@ def triage():
             raise ValueError(f"Model returned unexpected values: {tags}")
 
     except anthropic.RateLimitError:
-        return jsonify({"error": "Triage service busy - try again shortly."}), 429
+        return jsonify({"error": "Tjänsten är upptagen - försök igen om en stund."}), 429
     except anthropic.APIStatusError as e:
-        return jsonify({"error": f"API error: {e.message}"}), 502
+        return jsonify({"error": f"API-fel: {e.message}"}), 502
     except (ValueError, json.JSONDecodeError):
         # Model didn't return usable JSON - fail soft rather than 500, since
         # the caller treats triage as optional and shouldn't block on it.
-        return jsonify({"error": "Could not classify this message."}), 502
+        return jsonify({"error": "Kunde inte klassificera meddelandet."}), 502
 
     return jsonify({
         "category": tags["category"],
@@ -160,7 +164,7 @@ def triage():
 
 @app.errorhandler(429)
 def rate_limited(_e):
-    return jsonify({"error": "Rate limit reached - try again in a bit."}), 429
+    return jsonify({"error": "Gränsen för antal anrop är nådd - försök igen om en stund."}), 429
 
 
 if __name__ == "__main__":
